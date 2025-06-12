@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JSON Viewer</title>
+  <style>
+    body {
+      background-color: #1e1e1e;
+      color: #d4d4d4;
+      font-family: 'Courier New', monospace;
+      padding: 10px;
+      margin: 0;
+    }
+    h1 {
+      color: #61afef;
+      text-align: center;
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+    }
+    input[type="search"], select {
+      background-color: #2d2d2d;
+      color: #d4d4d4;
+      padding: 10px;
+      border: 1px solid #555;
+      margin: 10px 0;
+      border-radius: 5px;
+      width: 100%;
+      font-size: 1rem;
+    }
+    .json-container {
+      background-color: #2d2d2d;
+      padding: 20px;
+      border-radius: 5px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      max-height: 400px;
+      overflow-y: auto;
+      margin-top: 20px;
+    }
+    .json-container code {
+      color: #c5c8c6;
+      font-size: 1rem;
+      word-break: break-word;
+    }
+    
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.5rem;
+      }
+      input[type="search"], select {
+        padding: 8px;
+        font-size: 0.9rem;
+      }
+      .json-container {
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>JSON Viewer</h1>
+  
+  <input type="search" id="searchInput" placeholder="Search JSON" onkeyup="filterJSON()">
+  
+  <div>
+    <label for="filter">Filter by Key: </label>
+    <select id="filter" onchange="filterJSON()">
+      <option value="">All</option>
+      <option value="name">Name</option>
+      <option value="age">Age</option>
+    </select>
+  </div>
+
+  <div class="json-container" id="jsonContainer">
+    <code>Loading JSON...</code>
+  </div>
+
+  <script>
+    let jsonData = [];
+
+    // Function to fetch JSON from a file
+    async function loadJSON() {
+      try {
+        const response = await fetch('enhanced_contract_deployments_with_source.json');  // Path to your JSON file
+        jsonData = await response.json();
+        renderJSON(jsonData);
+      } catch (error) {
+        console.error("Error loading the JSON file:", error);
+      }
+    }
+
+    function renderJSON(data) {
+      const jsonContainer = document.getElementById('jsonContainer');
+      jsonContainer.innerHTML = `<code>${JSON.stringify(data, null, 2)}</code>`;
+    }
+
+    function filterJSON() {
+      const searchInput = document.getElementById('searchInput').value.toLowerCase();
+      const filterValue = document.getElementById('filter').value;
+
+      const filteredData = jsonData.filter(item => {
+        const matchSearch = JSON.stringify(item).toLowerCase().includes(searchInput);
+        const matchFilter = filterValue ? item[filterValue] : true;
+        return matchSearch && matchFilter;
+      });
+
+      renderJSON(filteredData);
+    }
+
+    // Load the JSON file on page load
+    window.onload = loadJSON;
+  </script>
+</body>
+</html>
