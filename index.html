@@ -48,11 +48,25 @@
       margin-top: 10px;
     }
     .json-container code {
-      color: #c5c8c6;
+      color: #00ff00;  /* Matrix Green */
       font-size: 1rem;
       word-break: break-word;
     }
-    
+    .download-btn {
+      background-color: #28a745;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 10px;
+      width: 100%;
+    }
+    .download-btn:hover {
+      background-color: #218838;
+    }
+
     @media (max-width: 600px) {
       h1 {
         font-size: 1.5rem;
@@ -83,6 +97,8 @@
     <code>Loading JSON...</code>
   </div>
 
+  <button class="download-btn" onclick="downloadJSON()">Download JSON</button>
+
   <script>
     let jsonData = [];
 
@@ -109,7 +125,7 @@
 
       const filteredData = jsonData.filter(item => {
         const matchSearch = JSON.stringify(item).toLowerCase().includes(searchInput);
-        const matchFilter = filterValue ? item[filterValue] : true;
+        const matchFilter = filterValue ? item.hasOwnProperty(filterValue) : true;
         return matchSearch && matchFilter;
       });
 
@@ -133,6 +149,17 @@
         option.textContent = key;
         filterSelect.appendChild(option);
       });
+    }
+
+    function downloadJSON() {
+      const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'enhanced_contract_deployments_with_source.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     }
 
     // Load the JSON file on page load
