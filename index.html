@@ -5,23 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JSON Viewer</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
     body {
       background-color: #1e1e1e;
       color: #d4d4d4;
       font-family: 'Courier New', monospace;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
       padding: 10px;
-      margin: 0;
+      overflow: hidden;
     }
     h1 {
       color: #61afef;
       text-align: center;
-      font-size: 1.8rem;
-      margin-bottom: 20px;
+      font-size: 2rem;
+      margin-bottom: 10px;
     }
     input[type="search"], select {
       background-color: #2d2d2d;
       color: #d4d4d4;
-      padding: 10px;
+      padding: 12px;
       border: 1px solid #555;
       margin: 10px 0;
       border-radius: 5px;
@@ -34,9 +43,9 @@
       border-radius: 5px;
       white-space: pre-wrap;
       word-wrap: break-word;
-      max-height: 400px;
       overflow-y: auto;
-      margin-top: 20px;
+      flex-grow: 1;
+      margin-top: 10px;
     }
     .json-container code {
       color: #c5c8c6;
@@ -67,8 +76,6 @@
     <label for="filter">Filter by Key: </label>
     <select id="filter" onchange="filterJSON()">
       <option value="">All</option>
-      <option value="name">Name</option>
-      <option value="age">Age</option>
     </select>
   </div>
 
@@ -85,6 +92,7 @@
         const response = await fetch('enhanced_contract_deployments_with_source.json');  // Path to your JSON file
         jsonData = await response.json();
         renderJSON(jsonData);
+        populateFilters(jsonData);
       } catch (error) {
         console.error("Error loading the JSON file:", error);
       }
@@ -106,6 +114,25 @@
       });
 
       renderJSON(filteredData);
+    }
+
+    function populateFilters(data) {
+      // Extract all keys from the JSON data and populate the filter options
+      const filterSelect = document.getElementById('filter');
+      const keys = new Set();
+      data.forEach(item => {
+        Object.keys(item).forEach(key => {
+          keys.add(key);
+        });
+      });
+
+      // Populate the select dropdown with keys
+      keys.forEach(key => {
+        const option = document.createElement('option');
+        option.value = key;
+        option.textContent = key;
+        filterSelect.appendChild(option);
+      });
     }
 
     // Load the JSON file on page load
