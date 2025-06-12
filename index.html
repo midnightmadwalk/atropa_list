@@ -52,6 +52,30 @@
       font-size: 1rem;
       word-break: break-word;
     }
+
+    /* New Section for the Token Information */
+    .token-info {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .token-box {
+      background-color: #333;
+      border: 2px solid #00ff00;
+      color: #00ff00;
+      padding: 15px;
+      width: 150px;
+      text-align: center;
+      border-radius: 8px;
+    }
+
+    .token-box span {
+      display: block;
+      margin-bottom: 10px;
+    }
+
     .download-btn {
       background-color: #28a745;
       color: white;
@@ -93,6 +117,11 @@
     </select>
   </div>
 
+  <!-- Token Info Section -->
+  <div id="tokenInfo" class="token-info">
+    <!-- Token Boxes will be dynamically added here -->
+  </div>
+
   <div class="json-container" id="jsonContainer">
     <code>Loading JSON...</code>
   </div>
@@ -109,6 +138,7 @@
         jsonData = await response.json();
         renderJSON(jsonData);
         populateFilters(jsonData);
+        renderTokenInfo(jsonData);
       } catch (error) {
         console.error("Error loading the JSON file:", error);
       }
@@ -148,6 +178,28 @@
         option.value = key;
         option.textContent = key;
         filterSelect.appendChild(option);
+      });
+    }
+
+    function renderTokenInfo(data) {
+      const tokenInfoContainer = document.getElementById('tokenInfo');
+      
+      data.forEach(item => {
+        const tokenBox = document.createElement('div');
+        tokenBox.classList.add('token-box');
+        
+        // Create token name and symbol elements
+        const tokenName = document.createElement('span');
+        tokenName.textContent = `Token Name: ${item.token_name}`;
+        const tokenSymbol = document.createElement('span');
+        tokenSymbol.textContent = `Token Symbol: ${item.token_symbol}`;
+        
+        // Append name and symbol to token box
+        tokenBox.appendChild(tokenName);
+        tokenBox.appendChild(tokenSymbol);
+        
+        // Add token box to the container
+        tokenInfoContainer.appendChild(tokenBox);
       });
     }
 
