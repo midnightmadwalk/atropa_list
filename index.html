@@ -62,10 +62,12 @@
       color: #00ff00;
       padding: 20px;
       border-radius: 8px;
-      width: 100%;
+      width: 250px;
       text-align: center;
-      margin-top: 20px;
+      position: absolute;
       display: none;
+      z-index: 10;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
     }
 
     .download-btn {
@@ -139,12 +141,12 @@
         tokenBox.appendChild(tokenSymbol);
         
         // Add token box to the container
-        tokenBox.onclick = () => showTokenDetails(item); // Show the details when clicked
+        tokenBox.onclick = (event) => showTokenDetails(event, item); // Show the details when clicked
         tokenInfoContainer.appendChild(tokenBox);
       });
     }
 
-    function showTokenDetails(item) {
+    function showTokenDetails(event, item) {
       const tokenDetailsContainer = document.getElementById('tokenDetails');
       const detailsText = document.getElementById('detailsText');
       
@@ -157,6 +159,14 @@
         <strong>Contract Address:</strong> <a href="https://etherscan.io/address/${item.receipt_contract_address}" target="_blank">${item.receipt_contract_address}</a>
       `;
       
+      // Get mouse position
+      const mouseX = event.clientX;
+      const mouseY = event.clientY;
+
+      // Position the token details container near the cursor
+      tokenDetailsContainer.style.left = `${mouseX + 10}px`;
+      tokenDetailsContainer.style.top = `${mouseY + 10}px`;
+
       // Show the token details section
       tokenDetailsContainer.style.display = 'block';
     }
